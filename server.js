@@ -32,6 +32,12 @@ server.get('*', (req, res) => {
     res.status(500).send("Sorry, something went wrong")
 });
 
+server.use(function(err, req, res, next){
+    res.sendStatus(500);
+    res.render('500');
+});
+
+
 
 // http://localhost:4000
 server.listen(PORT, () => {
