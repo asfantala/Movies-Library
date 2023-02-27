@@ -148,14 +148,19 @@ function errorHandler(erorr, req, res) {
 //handle error 
 server.get('*', (req, res) => {
     res.status(404).send("page not found error")
-    res.status(500).send("Sorry, something went wrong")
 });
 
-server.use(function(err, req, res, next){
-    res.sendStatus(500);
-    res.render('500');
-});
-
+// server.use(function(err, req, res, next){
+//     res.sendStatus(500);
+//     res.render('500');
+// });
+function errorHandler(erorr, req, res) {
+    const err = {
+        status: 500,
+        massage: erorr
+    }
+    res.status(500).send(err);
+}
 
 
 
