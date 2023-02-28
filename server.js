@@ -10,6 +10,8 @@ const pg = require('pg');
 const PORT = 4000;
 
 const client = new pg.Client(process.env.DATABASE_URL);
+
+
 function Movie(title, poster_path, overview) {
     this.title = title;
     this.poster_path = poster_path;
@@ -36,6 +38,18 @@ server.get('/upcoming',upcoming);
 server.get('/getMovies', getMovies);
 server.post('/getMovies', addMovie);
 
+
+
+
+
+
+// routes
+server.get('/', homePage);
+server.get('/favorite', favPage);
+server.get('/trending', trenPage);
+server.get('/search', search);
+server.get('/latest', latest);
+server.get('/upcoming',upcoming);
 
 
 
@@ -165,6 +179,7 @@ res.send('your data was added');
 
 })
 }
+
 function errorHandler(erorr, req, res) {
     const err = {
         status: 500,
