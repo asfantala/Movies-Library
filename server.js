@@ -6,7 +6,10 @@ const data = require('./data.json')
 server.use(cors());
 require('dotenv').config();
 const axios = require('axios');
+const pg = require('pg');
 const PORT = 4000;
+
+const client = new pg.Client(process.env.DATABASE_URL);
 
 
 function Movie(title, poster_path, overview) {
@@ -22,6 +25,22 @@ function TrendingMov(id,title, release_date ,poster_path, overview) {
     this.poster_path = poster_path;
     this.overview = overview;
 }
+server.use(errorHandler);
+server.use(express.json());
+
+// routes
+server.get('/', homePage);
+server.get('/favorite', favPage);
+server.get('/trending', trenPage);
+server.get('/search', search);
+server.get('/latest', latest);
+server.get('/upcoming',upcoming);
+server.get('/getMovies', getMovies);
+server.post('/getMovies', addMovie);
+
+
+
+
 
 
 // routes
@@ -136,6 +155,30 @@ function upcoming(req,res){
 
 }
 
+function getMovies(req,res){
+    //return all specific movie 
+    const sql = `SELECT * FROM specificMovies`;
+    client.query(sql)
+    .then((data)=>{
+        res.send(data.rows);
+    })
+    .catch((err)=>{
+        errorHandler(err,req,res);
+    })
+}
+function addMovie(req,res){
+    const mov = req.body;
+    console.log(mov);
+    const sql = `INSERT INTO specificMovies (title,release_date,poster_path,overview ) VALUES ($1,$2,$3,$4) RETURNING *;`
+    const values =[mov.title,mov.release_date,mov.poster_path,mov.overview];
+client.query(sql,values)
+.then(()=>{
+res.send('your data was added');
+}) .catch((err)=>{
+    errorHandler(err,req,res);
+
+})
+}
 
 function errorHandler(erorr, req, res) {
     const err = {
@@ -165,6 +208,10 @@ function errorHandler(erorr, req, res) {
 
 
 // http://localhost:4000
-server.listen(PORT, () => {
-    console.log(`listening on ${PORT}`);
-});
+client.connect()
+.then(()=>{
+    server.listen(PORT, () => {
+        console.log(`listening on ${PORT}`);
+    });
+
+})
