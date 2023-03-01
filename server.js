@@ -2,12 +2,14 @@
 const express = require('express');
 const cors = require('cors');
 const server = express();
-const data = require('./data.json')
+const data = require('./MovieData/data.json')
 server.use(cors());
 require('dotenv').config();
 const axios = require('axios');
 const pg = require('pg');
 const PORT = 4000;
+server.use(express.json());
+
 
 const client = new pg.Client(process.env.DATABASE_URL);
 
@@ -24,8 +26,6 @@ function TrendingMov(id,title, release_date ,poster_path, overview) {
     this.poster_path = poster_path;
     this.overview = overview;
 }
-server.use(errorHandler);
-server.use(express.json());
 
 // routes
 server.get('/', homePage);
@@ -37,6 +37,7 @@ server.get('/upcoming',upcoming);
 server.get('/getMovies', getMovies);
 server.post('/getMovies', addMovie);
 
+server.use(errorHandler);
 
 
 // functions 
@@ -97,8 +98,8 @@ function search(req,res){
 function latest(req,res){
     try{
         const APIKey = process.env.APIKey;
-            const url = `https://api.themoviedb.org/3/tv/latest?api_key=${APIKey}&language=en-US&append_to_response=videos,images`
-            axios.get(url)
+        const url = `https://api.themoviedb.org/3/movie/latest?api_key=${APIKey}&language=en-US`;
+        axios.get(url)
                 .then((result) => {
         let mapResult = result.data;
         res.send(mapResult);
@@ -183,9 +184,9 @@ function errorHandler(erorr, req, res) {
 
 
 // http://localhost:4000
-client.connect()
-.then(()=>{
-    server.listen(PORT, () => {
-        console.log(`listening on ${PORT}`);
-    });
-})
+// client.connect()
+// .then(()=>{
+//     server.listen(PORT, () => {
+//         console.log(`listening on ${PORT}`);
+//     });
+// })
