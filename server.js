@@ -2,7 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const server = express();
-const data = require('./data.json')
+const data = require('./MovieData/data.json')
 server.use(cors());
 require('dotenv').config();
 const axios = require('axios');
@@ -92,7 +92,7 @@ function search(req,res){
 function latest(req,res){
     try{
         const APIKey = process.env.APIKey;
-            const url = `https://api.themoviedb.org/3/tv/latest?api_key=${APIKey}&language=en-US&append_to_response=videos,images`
+            const url = `https://api.themoviedb.org/3/movie/latest?api_key=${APIKey}&language=en-US`;
             axios.get(url)
                 .then((result) => {
         let mapResult = result.data;
