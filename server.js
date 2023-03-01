@@ -184,9 +184,9 @@ function errorHandler(erorr, req, res) {
 
 
 // http://localhost:4000
-// client.connect()
-// .then(()=>{
-//     server.listen(PORT, () => {
-//         console.log(`listening on ${PORT}`);
-//     });
-// })
+client.connect()
+.then(()=>{
+    server.listen(PORT, () => {
+        console.log(`listening on ${PORT}`);
+    });
+})
