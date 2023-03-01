@@ -11,7 +11,6 @@ const PORT = 4000;
 
 const client = new pg.Client(process.env.DATABASE_URL);
 
-
 function Movie(title, poster_path, overview) {
     this.title = title;
     this.poster_path = poster_path;
@@ -37,19 +36,6 @@ server.get('/latest', latest);
 server.get('/upcoming',upcoming);
 server.get('/getMovies', getMovies);
 server.post('/getMovies', addMovie);
-
-
-
-
-
-
-// routes
-server.get('/', homePage);
-server.get('/favorite', favPage);
-server.get('/trending', trenPage);
-server.get('/search', search);
-server.get('/latest', latest);
-server.get('/upcoming',upcoming);
 
 
 
@@ -180,23 +166,13 @@ res.send('your data was added');
 })
 }
 
-function errorHandler(erorr, req, res) {
-    const err = {
-        status: 500,
-        massage: erorr
-    }
-    res.status(500).send(err);
-}
+
+
 
 //handle error 
 server.get('*', (req, res) => {
     res.status(404).send("page not found error")
 });
-
-// server.use(function(err, req, res, next){
-//     res.sendStatus(500);
-//     res.render('500');
-// });
 function errorHandler(erorr, req, res) {
     const err = {
         status: 500,
@@ -204,7 +180,6 @@ function errorHandler(erorr, req, res) {
     }
     res.status(500).send(err);
 }
-
 
 
 // http://localhost:4000
@@ -213,5 +188,4 @@ client.connect()
     server.listen(PORT, () => {
         console.log(`listening on ${PORT}`);
     });
-
 })
