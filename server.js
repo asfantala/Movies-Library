@@ -8,9 +8,10 @@ require('dotenv').config();
 const axios = require('axios');
 const pg = require('pg');
 const PORT = 4000;
+server.use(express.json());
+
 
 const client = new pg.Client(process.env.DATABASE_URL);
-
 
 function Movie(title, poster_path, overview) {
     this.title = title;
@@ -25,8 +26,6 @@ function TrendingMov(id,title, release_date ,poster_path, overview) {
     this.poster_path = poster_path;
     this.overview = overview;
 }
-server.use(errorHandler);
-server.use(express.json());
 
 // routes
 server.get('/', homePage);
@@ -38,19 +37,7 @@ server.get('/upcoming',upcoming);
 server.get('/getMovies', getMovies);
 server.post('/getMovies', addMovie);
 
-
-
-
-
-
-// routes
-server.get('/', homePage);
-server.get('/favorite', favPage);
-server.get('/trending', trenPage);
-server.get('/search', search);
-server.get('/latest', latest);
-server.get('/upcoming',upcoming);
-
+server.use(errorHandler);
 
 
 // functions 
@@ -111,8 +98,8 @@ function search(req,res){
 function latest(req,res){
     try{
         const APIKey = process.env.APIKey;
-            const url = `https://api.themoviedb.org/3/movie/latest?api_key=${APIKey}&language=en-US`;
-            axios.get(url)
+        const url = `https://api.themoviedb.org/3/movie/latest?api_key=${APIKey}&language=en-US`;
+        axios.get(url)
                 .then((result) => {
         let mapResult = result.data;
         res.send(mapResult);
@@ -180,23 +167,13 @@ res.send('your data was added');
 })
 }
 
-function errorHandler(erorr, req, res) {
-    const err = {
-        status: 500,
-        massage: erorr
-    }
-    res.status(500).send(err);
-}
+
+
 
 //handle error 
 server.get('*', (req, res) => {
     res.status(404).send("page not found error")
 });
-
-// server.use(function(err, req, res, next){
-//     res.sendStatus(500);
-//     res.render('500');
-// });
 function errorHandler(erorr, req, res) {
     const err = {
         status: 500,
@@ -204,7 +181,6 @@ function errorHandler(erorr, req, res) {
     }
     res.status(500).send(err);
 }
-
 
 
 // http://localhost:4000
@@ -213,5 +189,4 @@ client.connect()
     server.listen(PORT, () => {
         console.log(`listening on ${PORT}`);
     });
-
 })
