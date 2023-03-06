@@ -7,7 +7,7 @@ server.use(cors());
 require('dotenv').config();
 const axios = require('axios');
 const pg = require('pg');
-const PORT = 4000;
+const PORT = process.env.PORT || 4000 ;
 server.use(express.json());
 
 
@@ -226,6 +226,7 @@ function errorHandler(erorr, req, res) {
     }
     res.status(500).send(err);
 }
+
 
 
 // http://localhost:4000
