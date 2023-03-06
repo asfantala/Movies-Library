@@ -176,7 +176,7 @@ res.send('your data was added');
 function updateMovies(req,res) {
     const id = req.params.id;
     const sql = `UPDATE specificMovies SET title=$1, release_date=$2, poster_path=$3 overview=$4 WHERE id=${id} RETURNING *`;
-    const values = [req.title,req.release_date,req.poster_path,req.overview];
+    const values = [req.body.title,req.body.release_date,req.body.poster_path,req.body.overview];
     client.query(sql,values)
     .then((data)=>{
         res.status(200).send(data.rows);
