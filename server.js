@@ -7,7 +7,7 @@ server.use(cors());
 require('dotenv').config();
 const axios = require('axios');
 const pg = require('pg');
-const PORT = 4000;
+const PORT = process.env.PORT || 4000 ;
 server.use(express.json());
 
 
@@ -36,6 +36,11 @@ server.get('/latest', latest);
 server.get('/upcoming',upcoming);
 server.get('/getMovies', getMovies);
 server.post('/getMovies', addMovie);
+server.put('/getMovies/:id',updateMovies);
+server.delete('/getMovies/:id',deleteMOvies);
+server.get('/getMovies/:id', dataBaseMovies);
+
+
 
 server.use(errorHandler);
 
@@ -152,6 +157,8 @@ function getMovies(req,res){
     .catch((err)=>{
         errorHandler(err,req,res);
     })
+
+
 }
 function addMovie(req,res){
     const mov = req.body;
@@ -166,14 +173,52 @@ res.send('your data was added');
 
 })
 }
+function updateMovies(req,res) {
+    const id = req.params.id;
+    const sql = `UPDATE specificMovies SET title=$1, release_date=$2, poster_path=$3 overview=$4 WHERE id=${id} RETURNING *`;
+    const values = [req.body.title,req.body.release_date,req.body.poster_path,req.body.overview];
+    client.query(sql,values)
+    .then((data)=>{
+        res.status(200).send(data.rows);
+    })
+    .catch((err)=>{
+        errorHandler(err,req,res);
+    })
+}
+
+function deleteMOvies(req,res) {
+    
+    const id = req.params.id;
+    const sql = `DELETE FROM specificMovies WHERE id=${id}`;
+    client.query(sql)
+    .then((data)=>{
+        res.status(204).json({});
+    })
+    .catch((err)=>{
+        errorHandler(err,req,res);
+    })
+
+}
+function dataBaseMovies(req,res){
+    const id = req.params.id;
+    const sql = `SELECT * FROM specificMovies WHERE id = ${id}`;
+    client.query(sql)
+    .then((data)=>{
+        res.send(data.rows);
+    })
+    .catch((err)=>{
+        errorHandler(err,req,res);
+    })
 
 
-
+}
 
 //handle error 
 server.get('*', (req, res) => {
     res.status(404).send("page not found error")
 });
+
+
 function errorHandler(erorr, req, res) {
     const err = {
         status: 500,
@@ -181,6 +226,7 @@ function errorHandler(erorr, req, res) {
     }
     res.status(500).send(err);
 }
+
 
 
 // http://localhost:4000
