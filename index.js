@@ -183,7 +183,7 @@ function addMovie(req, res) {
 }
 function updateMovies(req, res) {
     const id = req.params.id;
-    const sql = `UPDATE specificMovies SET  overview=$1 WHERE id=${id} RETURNING *`;
+    const sql = `UPDATE specificMovies SET overview=$1 WHERE id=${id} RETURNING *`;
     const values = [req.body.overview];
     client.query(sql, values)
         .then((data) => {
