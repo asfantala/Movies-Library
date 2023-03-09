@@ -33,7 +33,7 @@ server.get('/latest', latest);
 server.get('/upcoming', upcoming);
 server.get('/getMovies', getMovies);
 server.post('/getMovies', addMovie);
-server.put('/getMovies/:id', updateMovies);
+server.put('/updateMovies/:id', updateMovies);
 server.delete('/getMovies/:id', deleteMOvies);
 server.get('/getMovies/:id', dataBaseMovies);
 server.get('*', notFoundHandler)
@@ -183,8 +183,8 @@ function addMovie(req, res) {
 }
 function updateMovies(req, res) {
     const id = req.params.id;
-    const sql = `UPDATE specificMovies SET title=$1, release_date=$2, poster_path=$3, overview=$4 WHERE id=${id} RETURNING *`;
-    const values = [req.body.title, req.body.release_date, req.body.poster_path, req.body.overview];
+    const sql = `UPDATE specificMovies SET  overview=$1 WHERE id=${id} RETURNING *`;
+    const values = [req.body.overview];
     client.query(sql, values)
         .then((data) => {
             res.status(200).send(data.rows);
@@ -237,12 +237,11 @@ function errorHandler(error, req, res) {
 
 
 
-// // http://localhost:4000
-// client.connect()
-//     .then(() => {
-//         server.listen(PORT, () => {
-//             console.log(`listening on ${PORT}`);
-//         });
-//     })
+// http://localhost:3000
+client.connect()
+    .then(() => {
+        server.listen(PORT, () => {
+            console.log(`listening on ${PORT}`);
+        });
+    })
 
-server.listen(3000,()=>{console.log("hi");})
