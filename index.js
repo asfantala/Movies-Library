@@ -187,6 +187,14 @@ function updateMovies(req, res) {
     const values = [req.body.overview];
     client.query(sql, values)
         .then((data) => {
+            const sql = `SELECT * FROM specificMovies`;
+            client.query(sql)
+                .then((data) => {
+                    res.send(data.rows);
+                })
+                .catch((err) => {
+                    errorHandler(err, req, res);
+                })
             res.status(200).send(data.rows);
         })
         .catch((err) => {
@@ -222,7 +230,7 @@ function dataBaseMovies(req, res) {
 }
 
 //handle error 
-function notFoundHandler (req, res){
+function notFoundHandler(req, res) {
     res.status(404).send("page not found error")
 }
 
