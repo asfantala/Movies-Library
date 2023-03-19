@@ -59,8 +59,14 @@ function homePage(req, res) {
 }
 
 function favPage(req, res) {
-    res.send('Welcome to Favorite Page');
-
+    const sql = `SELECT * FROM favmovies;`;
+    client.query(sql)
+        .then((data) => {
+            res.status(200).json(data.rows);
+        })
+        .catch((error) => {
+            errorHandler(error, req, res);
+        })
 }
 
 function trenPage(req, res) {
@@ -183,8 +189,8 @@ function addMovie(req, res) {
 }
 function updateMovies(req, res) {
     const id = req.params.id;
-    const sql = `UPDATE specificMovies SET overview=$1 WHERE id=${id} RETURNING *`;
-    const values = [req.body.overview];
+    const sql = `UPDATE specificMovies SET comment=$1 WHERE id=${id} RETURNING *`;
+    const values = [req.body.comment];
     client.query(sql, values)
         .then((data) => {
             const sql = `SELECT * FROM specificMovies`;
