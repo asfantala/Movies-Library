@@ -59,7 +59,7 @@ function homePage(req, res) {
 }
 
 function favPage(req, res) {
-    const sql = `SELECT * FROM favmovies;`;
+    const sql = `SELECT * FROM specificMovies`;
     client.query(sql)
         .then((data) => {
             res.status(200).json(data.rows);
