@@ -32,7 +32,7 @@ server.get('/search', search);
 server.get('/latest', latest);
 server.get('/upcoming', upcoming);
 server.get('/getMovies', getMovies);
-server.post('/getMovies', addMovie);
+server.post('/addMovies', addMovie);
 server.put('/updateMovies/:id', updateMovies);
 server.delete('/getMovies/:id', deleteMOvies);
 server.get('/getMovies/:id', dataBaseMovies);
@@ -177,8 +177,8 @@ function getMovies(req, res) {
 function addMovie(req, res) {
     const mov = req.body;
     console.log(mov);
-    const sql = `INSERT INTO specificMovies (title,release_date,poster_path,overview ) VALUES ($1,$2,$3,$4) RETURNING *`;
-    const values = [mov.title, mov.release_date, mov.poster_path, mov.overview];
+    const sql = `INSERT INTO specificMovies (title,release_date,poster_path,overview ) VALUES ($1,$2,$3,$4,$5) RETURNING *`;
+    const values = [mov.title, mov.release_date, mov.poster_path, mov.overview, mov.comment];
     client.query(sql, values)
         .then(() => {
             res.send('your data was added');
@@ -214,7 +214,16 @@ function deleteMOvies(req, res) {
     const sql = `DELETE FROM specificMovies WHERE id=${id}`;
     client.query(sql)
         .then((data) => {
-            res.status(204).json({});
+            // res.status(204).json({});
+            const sql = `SELECT * FROM specificMovies`;
+            client.query(sql)
+                .then((data) => {
+                    res.send(data.rows);
+                })
+                .catch((err) => {
+                    errorHandler(err, req, res);
+                })
+            res.status(200).send(data.rows);
         })
         .catch((err) => {
             errorHandler(err, req, res);
