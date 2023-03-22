@@ -177,9 +177,10 @@ function getMovies(req, res) {
 function addMovie(req, res) {
     const mov = req.body;
     console.log(mov);
-    const sql = `INSERT INTO specificMovies (title,release_date,poster_path,overview ) VALUES ($1,$2,$3,$4,$5) RETURNING *`;
+    const sql = `INSERT INTO specificMovies (title,release_date,poster_path,overview,comment) 
+    VALUES ($1,$2,$3,$4,$5) RETURNING *`;
     const values = [mov.title, mov.release_date, mov.poster_path, mov.overview, mov.comment];
-    client.query(sql, values)
+    client.query(sql,values)
         .then(() => {
             res.send('your data was added');
         }).catch((err) => {
